@@ -31,5 +31,6 @@ public class UsuarioEntity {
   @ElementCollection(targetClass = EnderecoEntity.class)
   private List<EnderecoEntity> endereco;
 
+  @ElementCollection(targetClass = ProdutoEntity.class)
   private List<ProdutoEntity> carrinho;
 }
