@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ecommerce.Application.DTOs.EnderecoDTO;
+import br.com.ecommerce.Application.DTOs.ProdutoDTO;
 import br.com.ecommerce.Application.DTOs.UsuarioDTO;
+import br.com.ecommerce.Application.Service.IProdutoService;
 import br.com.ecommerce.Application.Service.IUsuarioService;
+import br.com.ecommerce.Domain.Entities.CarrinhoEntity;
 import br.com.ecommerce.Domain.Entities.EnderecoEntity;
+import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 import br.com.ecommerce.Domain.Entities.UsuarioEntity;
 import br.com.ecommerce.Domain.Repositories.IUsuarioRepository;
 import br.com.ecommerce.Util.Handlers.Message;
@@ -19,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UsuarioService implements IUsuarioService {
   private final IUsuarioRepository repository;
+  private final IProdutoService produtoService;
 
   @Override
   public UsuarioEntity save(UsuarioDTO usuario) {
@@ -84,6 +89,16 @@ public class UsuarioService implements IUsuarioService {
     List<EnderecoEntity> enderecosUsuario = usuario.getEndereco();
     enderecosUsuario.add(addEndereco);
     usuario.setEndereco(enderecosUsuario);
+    return this.repository.save(usuario);
+  }
+
+  @Override
+  public UsuarioEntity adicionaProduto(Long idUsuario, Long idProduto) {
+    UsuarioEntity usuario = this.findById(idUsuario);
+    ProdutoEntity produto = this.produtoService.findById(idProduto);
+    CarrinhoEntity carrinho = usuario.getCarrinho();
+    carrinho.getProdutos().add(produto);
+    usuario.setCarrinho(carrinho);
     return this.repository.save(usuario);
   }
 }
