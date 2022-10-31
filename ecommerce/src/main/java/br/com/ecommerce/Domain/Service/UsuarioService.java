@@ -16,8 +16,13 @@ import br.com.ecommerce.Domain.Entities.EnderecoEntity;
 import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 import br.com.ecommerce.Domain.Entities.UsuarioEntity;
 import br.com.ecommerce.Domain.Repositories.IUsuarioRepository;
-import br.com.ecommerce.Util.Handlers.Message;
+import br.com.ecommerce.Util.Exceptions.CustomIllegalArgumentException;
+import br.com.ecommerce.Util.Exceptions.EmailAlreadyInUseException;
+import br.com.ecommerce.Util.Exceptions.UserNotFoundException;
+import br.com.ecommerce.Util.Validation.Assert;
 import lombok.RequiredArgsConstructor;
+
+import static br.com.ecommerce.Util.Handlers.Message.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public UsuarioEntity save(UsuarioDTO usuario) {
+    validateFields(usuario, false);
     UsuarioEntity novoUsuario = UsuarioEntity.builder()
         .nome(usuario.getNome())
         .cpf(usuario.getCpf())
@@ -38,6 +44,7 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public UsuarioEntity update(UsuarioDTO usuario) {
+    validateFields(usuario, true);
     UsuarioEntity updateUsuario = UsuarioEntity.builder()
         .id(usuario.getId())
         .nome(usuario.getNome())
@@ -61,7 +68,7 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public UsuarioEntity findByEmail(String email) {
-    return this.repository.findByEmail(email);
+    return this.repository.findByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
   @Override
@@ -71,7 +78,7 @@ public class UsuarioService implements IUsuarioService {
 
   @Override
   public UsuarioEntity findById(Long id) {
-    return this.repository.findById(id);
+    return this.repository.findById((int) (long) id).orElseThrow(UserNotFoundException::new);
   }
 
   @Override
@@ -100,5 +107,22 @@ public class UsuarioService implements IUsuarioService {
     carrinho.getProdutos().add(produto);
     usuario.setCarrinho(carrinho);
     return this.repository.save(usuario);
+  }
+
+  private void validateFields(UsuarioDTO usuario, boolean update) {
+    if (!Assert.hasField(usuario.getEmail()))
+      throw new CustomIllegalArgumentException(EMAIL_OBRIGATORIO);
+    if (!Assert.hasField(usuario.getNome()))
+      throw new CustomIllegalArgumentException(NOME_OBRIGATORIO);
+    if (!Assert.hasField(usuario.getCpf()))
+      throw new CustomIllegalArgumentException(CPF_OBRIGATORIO);
+    if (!Assert.hasField(usuario.getEndereco()))
+      throw new CustomIllegalArgumentException(ENDERECO_OBRIGATORIO);
+
+    if (!update) {
+      Optional<UsuarioEntity> userRegisteredWithEmail = this.repository.findByEmail(usuario.getEmail());
+      if (!userRegisteredWithEmail.isPresent())
+        throw new EmailAlreadyInUseException(EMAIL_EXISTENTE);
+    }
   }
 }

@@ -9,8 +9,13 @@ import br.com.ecommerce.Application.DTOs.ProdutoDTO;
 import br.com.ecommerce.Application.Service.IProdutoService;
 import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 import br.com.ecommerce.Domain.Repositories.IProdutoRepository;
+import br.com.ecommerce.Util.Exceptions.CustomIllegalArgumentException;
+import br.com.ecommerce.Util.Exceptions.ProductNotFoundException;
 import br.com.ecommerce.Util.Handlers.Message;
+import br.com.ecommerce.Util.Validation.Assert;
 import lombok.RequiredArgsConstructor;
+
+import static br.com.ecommerce.Util.Handlers.Message.*;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,7 @@ public class ProdutoService implements IProdutoService {
 
   @Override
   public ProdutoEntity save(ProdutoDTO produto) {
+    validateFields(produto);
     ProdutoEntity novoProduto = ProdutoEntity.builder()
         .nome(produto.getNome())
         .preco(produto.getPreco())
@@ -30,6 +36,7 @@ public class ProdutoService implements IProdutoService {
 
   @Override
   public ProdutoEntity update(ProdutoDTO produto) {
+    validateFields(produto);
     ProdutoEntity updateProduto = ProdutoEntity.builder()
         .id(produto.getId())
         .nome(produto.getNome())
@@ -53,6 +60,20 @@ public class ProdutoService implements IProdutoService {
 
   @Override
   public ProdutoEntity findById(Long id) {
-    return this.repository.findById(id);
+    return this.repository.findById((int) (long) id).orElseThrow(ProductNotFoundException::new);
+  }
+
+  private void validateFields(ProdutoDTO produto) {
+    if (!Assert.hasField(produto.getEstoque()))
+      throw new CustomIllegalArgumentException(ESTOQUE_OBRIGATORIO);
+    if (!Assert.hasField(produto.getNome()))
+      throw new CustomIllegalArgumentException(NOME_OBRIGATORIO);
+    if (!Assert.hasField(produto.getDescricao()))
+      throw new CustomIllegalArgumentException(DESCRICAO_OBRIGATORIA);
+    if (!Assert.hasField(produto.getPreco()))
+      throw new CustomIllegalArgumentException(PRECO_OBRIGATORIO);
+    if (produto.getEstoque() < 0) {
+      throw new CustomIllegalArgumentException(SEM_ESTOQUE);
+    }
   }
 }

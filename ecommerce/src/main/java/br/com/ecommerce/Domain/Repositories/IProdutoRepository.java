@@ -11,5 +11,4 @@ import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 public interface IProdutoRepository extends CrudRepository<ProdutoEntity, Integer> {
   List<ProdutoEntity> findAll();
 
-  ProdutoEntity findById(Long id);
 }

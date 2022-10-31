@@ -12,7 +12,5 @@ import br.com.ecommerce.Domain.Entities.UsuarioEntity;
 public interface IUsuarioRepository extends CrudRepository<UsuarioEntity, Integer> {
   List<UsuarioEntity> findAll();
 
-  UsuarioEntity findByEmail(String email);
-
-  UsuarioEntity findById(Long id);
+  Optional<UsuarioEntity> findByEmail(String email);
 }
