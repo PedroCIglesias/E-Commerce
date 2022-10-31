@@ -3,7 +3,6 @@ package br.com.ecommerce.Application.Service;
 import java.util.List;
 
 import br.com.ecommerce.Application.DTOs.EnderecoDTO;
-import br.com.ecommerce.Application.DTOs.ProdutoDTO;
 import br.com.ecommerce.Application.DTOs.UsuarioDTO;
 import br.com.ecommerce.Domain.Entities.EnderecoEntity;
 import br.com.ecommerce.Domain.Entities.UsuarioEntity;
@@ -28,5 +27,7 @@ public interface IUsuarioService {
   UsuarioEntity adicionaProduto(Long idUsuario, Long idProduto);
 
   EnderecoEntity pesquisaCep(String cep);
+
+  boolean limpaCarrinho(UsuarioEntity usuario);
 
 }

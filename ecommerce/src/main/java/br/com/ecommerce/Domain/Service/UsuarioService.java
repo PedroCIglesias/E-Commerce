@@ -8,13 +8,11 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
 import br.com.ecommerce.Application.DTOs.EnderecoDTO;
-import br.com.ecommerce.Application.DTOs.ProdutoDTO;
 import br.com.ecommerce.Application.DTOs.UsuarioDTO;
 import br.com.ecommerce.Application.Service.IProdutoService;
 import br.com.ecommerce.Application.Service.IUsuarioService;
@@ -137,6 +135,13 @@ public class UsuarioService implements IUsuarioService {
     return null;
   }
 
+  @Override
+  public boolean limpaCarrinho(UsuarioEntity usuario) {
+    usuario.setCarrinho(null);
+    this.repository.save(usuario);
+    return true;
+  }
+
   private void validateFields(UsuarioDTO usuario, boolean update) {
     if (!Assert.hasField(usuario.getEmail()))
       throw new CustomIllegalArgumentException(EMAIL_OBRIGATORIO);
@@ -147,10 +152,29 @@ public class UsuarioService implements IUsuarioService {
     if (!Assert.hasField(usuario.getEndereco()))
       throw new CustomIllegalArgumentException(ENDERECO_OBRIGATORIO);
 
+    validateEndereco(usuario.getEndereco());
+
     if (!update) {
       Optional<UsuarioEntity> userRegisteredWithEmail = this.repository.findByEmail(usuario.getEmail());
       if (!userRegisteredWithEmail.isPresent())
         throw new EmailAlreadyInUseException(EMAIL_EXISTENTE);
+    }
+  }
+
+  private void validateEndereco(List<EnderecoEntity> enderecos) {
+    for (EnderecoEntity endereco : enderecos) {
+      if (!Assert.hasField(endereco.getBairro()))
+        throw new CustomIllegalArgumentException(BAIRRO_OBRIGATORIO);
+      if (!Assert.hasField(endereco.getCep()))
+        throw new CustomIllegalArgumentException(CEP_OBRIGATORIO);
+      if (!Assert.hasField(endereco.getLocalidade()))
+        throw new CustomIllegalArgumentException(LOCALIDADE_OBRIGATORIO);
+      if (!Assert.hasField(endereco.getLogradouro()))
+        throw new CustomIllegalArgumentException(LOGRADOURO_OBRIGATORIO);
+      if (!Assert.hasField(endereco.getUf()))
+        throw new CustomIllegalArgumentException(UF_OBRIGATORIO);
+      if (!Assert.hasField(endereco.getNumero()))
+        throw new CustomIllegalArgumentException(NUMERO_OBRIGATORIO);
     }
   }
 }

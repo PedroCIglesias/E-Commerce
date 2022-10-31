@@ -2,7 +2,6 @@ package br.com.ecommerce.Domain.Service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ecommerce.Application.DTOs.ProdutoDTO;
@@ -47,6 +46,13 @@ public class ProdutoService implements IProdutoService {
   }
 
   @Override
+  public ProdutoEntity decrementaEstoque(ProdutoEntity produto) {
+    produto.setEstoque(produto.getEstoque() - 1);
+    validateFields(produto);
+    return this.repository.save(produto);
+  }
+
+  @Override
   public List<ProdutoEntity> findAll() {
     return this.repository.findAll();
   }
@@ -63,6 +69,20 @@ public class ProdutoService implements IProdutoService {
   }
 
   private void validateFields(ProdutoDTO produto) {
+    if (!Assert.hasField(produto.getEstoque()))
+      throw new CustomIllegalArgumentException(ESTOQUE_OBRIGATORIO);
+    if (!Assert.hasField(produto.getNome()))
+      throw new CustomIllegalArgumentException(NOME_OBRIGATORIO);
+    if (!Assert.hasField(produto.getDescricao()))
+      throw new CustomIllegalArgumentException(DESCRICAO_OBRIGATORIA);
+    if (!Assert.hasField(produto.getPreco()))
+      throw new CustomIllegalArgumentException(PRECO_OBRIGATORIO);
+    if (produto.getEstoque() < 0) {
+      throw new CustomIllegalArgumentException(SEM_ESTOQUE);
+    }
+  }
+
+  private void validateFields(ProdutoEntity produto) {
     if (!Assert.hasField(produto.getEstoque()))
       throw new CustomIllegalArgumentException(ESTOQUE_OBRIGATORIO);
     if (!Assert.hasField(produto.getNome()))

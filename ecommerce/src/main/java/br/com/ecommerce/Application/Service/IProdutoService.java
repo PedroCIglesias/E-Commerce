@@ -6,13 +6,15 @@ import br.com.ecommerce.Application.DTOs.ProdutoDTO;
 import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 
 public interface IProdutoService {
-  ProdutoEntity save(ProdutoDTO usuario);
+  ProdutoEntity save(ProdutoDTO produto);
 
-  ProdutoEntity update(ProdutoDTO usuario);
+  ProdutoEntity update(ProdutoDTO produto);
 
   List<ProdutoEntity> findAll();
 
   boolean delete(Long id);
 
   ProdutoEntity findById(Long id);
+
+  ProdutoEntity decrementaEstoque(ProdutoEntity produto);
 }

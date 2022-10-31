@@ -1,7 +1,5 @@
 package br.com.ecommerce.Application.DTOs;
 
-import javax.annotation.sql.DataSourceDefinition;
-
 import br.com.ecommerce.Domain.Entities.EnderecoEntity;
 import java.util.List;
 
