@@ -14,11 +14,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
+public class ProdutoDTO {
   private Long id;
   private String nome;
-  private String email;
-  private String cep;
-  private String cpf;
-  private List<EnderecoEntity> endereco;
+  private double preco;
+  private String descricao;
+  private int estoque;
 }
