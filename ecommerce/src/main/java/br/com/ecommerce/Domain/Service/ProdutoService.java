@@ -11,7 +11,6 @@ import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 import br.com.ecommerce.Domain.Repositories.IProdutoRepository;
 import br.com.ecommerce.Util.Exceptions.CustomIllegalArgumentException;
 import br.com.ecommerce.Util.Exceptions.ProductNotFoundException;
-import br.com.ecommerce.Util.Handlers.Message;
 import br.com.ecommerce.Util.Validation.Assert;
 import lombok.RequiredArgsConstructor;
 
