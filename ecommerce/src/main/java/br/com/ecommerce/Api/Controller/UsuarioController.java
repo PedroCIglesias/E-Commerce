@@ -45,11 +45,6 @@ public class UsuarioController {
   }
 
   @GetMapping("/{email}")
-  public UsuarioEntity findByEmail(String email) {
-    return this.service.findByEmail(email);
-  }
-
-  @GetMapping("/{email}")
   public List<EnderecoEntity> getEnderecos(String email) {
     return this.service.getEnderecos(email);
   }
