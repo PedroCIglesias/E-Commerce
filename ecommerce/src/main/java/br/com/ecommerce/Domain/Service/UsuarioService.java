@@ -11,7 +11,6 @@ import br.com.ecommerce.Application.DTOs.ProdutoDTO;
 import br.com.ecommerce.Application.DTOs.UsuarioDTO;
 import br.com.ecommerce.Application.Service.IProdutoService;
 import br.com.ecommerce.Application.Service.IUsuarioService;
-import br.com.ecommerce.Domain.Entities.CarrinhoEntity;
 import br.com.ecommerce.Domain.Entities.EnderecoEntity;
 import br.com.ecommerce.Domain.Entities.ProdutoEntity;
 import br.com.ecommerce.Domain.Entities.UsuarioEntity;
@@ -103,8 +102,8 @@ public class UsuarioService implements IUsuarioService {
   public UsuarioEntity adicionaProduto(Long idUsuario, Long idProduto) {
     UsuarioEntity usuario = this.findById(idUsuario);
     ProdutoEntity produto = this.produtoService.findById(idProduto);
-    CarrinhoEntity carrinho = usuario.getCarrinho();
-    carrinho.getProdutos().add(produto);
+    List<ProdutoEntity> carrinho = usuario.getCarrinho();
+    carrinho.add(produto);
     usuario.setCarrinho(carrinho);
     return this.repository.save(usuario);
   }
