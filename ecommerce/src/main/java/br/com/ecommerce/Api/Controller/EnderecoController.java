@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ecommerce.Application.Service.IEnderecoService;
+import br.com.ecommerce.Application.Service.IUsuarioService;
 import br.com.ecommerce.Domain.Entities.EnderecoEntity;
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/endereco")
 public class EnderecoController {
-  private final IEnderecoService service;
+  private final IUsuarioService service;
 
   @GetMapping("/{cep}")
   public EnderecoEntity pesquisaCep(@PathVariable String cep) {

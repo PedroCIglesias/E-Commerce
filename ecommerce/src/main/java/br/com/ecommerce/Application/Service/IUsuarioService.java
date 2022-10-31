@@ -27,4 +27,6 @@ public interface IUsuarioService {
 
   UsuarioEntity adicionaProduto(Long idUsuario, Long idProduto);
 
+  EnderecoEntity pesquisaCep(String cep);
+
 }

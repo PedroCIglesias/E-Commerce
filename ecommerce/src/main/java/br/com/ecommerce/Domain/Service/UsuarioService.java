@@ -1,10 +1,17 @@
 package br.com.ecommerce.Domain.Service;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.gson.Gson;
 
 import br.com.ecommerce.Application.DTOs.EnderecoDTO;
 import br.com.ecommerce.Application.DTOs.ProdutoDTO;
@@ -106,6 +113,28 @@ public class UsuarioService implements IUsuarioService {
     carrinho.add(produto);
     usuario.setCarrinho(carrinho);
     return this.repository.save(usuario);
+  }
+
+  @Override
+  public EnderecoEntity pesquisaCep(String cep) {
+    try {
+      URL url = new URL("https://viacep.com.br/ws/" + cep + "/json/");
+      URLConnection connection = url.openConnection();
+      InputStream is = connection.getInputStream();
+      BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+      String aux_cep = "";
+      StringBuilder jsonCep = new StringBuilder();
+
+      while ((aux_cep = br.readLine()) != null) {
+        jsonCep.append(aux_cep);
+      }
+
+      return new Gson().fromJson(jsonCep.toString(), EnderecoEntity.class);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   private void validateFields(UsuarioDTO usuario, boolean update) {
